@@ -11,21 +11,12 @@
 /**
  permanent Thread
  */
-@interface PThread :NSThread
-@end
-@implementation PThread
-
-- (void)dealloc {
-    NSLog(@"%s",__func__);
-}
-
-@end
 
 
 @interface ZThread()
 
 /** 内部线程*/
-@property (nonatomic,strong)PThread * pThread;
+@property (nonatomic,strong)NSThread * pThread;
 /** 线程是否停止*/
 @property (nonatomic,assign,getter=isStoped) BOOL stopped;
 @end
@@ -40,7 +31,7 @@
     if (self) {
         self.stopped = NO;
         __weak typeof(self)weakSelf = self;
-        self.pThread = [[PThread alloc] initWithBlock:^{
+        self.pThread = [[NSThread alloc] initWithBlock:^{
             [[NSRunLoop currentRunLoop] addPort:[[NSPort alloc] init] forMode:NSDefaultRunLoopMode];
             
             while (weakSelf && !weakSelf.isStoped) {
@@ -88,6 +79,7 @@
     self.stopped = YES;
     CFRunLoopStop(CFRunLoopGetCurrent());
     self.pThread = nil;
+    
 }
 
 /**
@@ -99,6 +91,8 @@
 
 - (void)dealloc {
     NSLog(@"%s",__func__);
+    [self stop];
+    
 }
 
 @end

@@ -42,6 +42,6 @@
 - (void)dealloc
 {
     NSLog(@"%s",__func__);
-    [self.thread stop];
+//    [self.thread stop];
 }
 @end
